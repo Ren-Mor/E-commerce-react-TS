@@ -1,7 +1,29 @@
+import { useState } from "react";
 import { Badge, Col, Container, Form, FormControl, Nav, Navbar, NavbarCollapse, Row } from "react-bootstrap";
+import { useSelector } from "react-redux";
 import { Link, NavLink } from "react-router-dom";
 
 function MyNav() {
+  const CartContent = useSelector((state: unknown) => state.cart.content);
+  const tokenStatus = useSelector((state: string | null) => state.login.token);
+  const user = useSelector((state: unknown) => state.login.user);
+
+  const [search, setSearch] = useState("");
+  const navigate = useNavigate();
+
+  const handleSearchSubmit = (e) => {
+    e.preventDefault();
+    if (search.trim()) {
+      navigate("/prodotti/all", { state: { search } });
+    }
+  };
+  const linkToProfile = () => {
+    if (user.ruolo === "ADMIN") {
+      navigate("/adminprofile");
+    } else {
+      navigate("/userprofile");
+    }
+  };
   return (
     <Navbar
       expand="xl"
