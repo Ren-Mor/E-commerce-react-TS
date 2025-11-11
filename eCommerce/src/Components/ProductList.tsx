@@ -1,3 +1,4 @@
-export default function ProductList() {
+function ProductList() {
   return null;
 }
+export default ProductList;

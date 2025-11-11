@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { useEffect, useState } from "react";
-import type { Product } from "./Types/Product";
+import type { Product } from "./Types/types";
 import MyNav from "./Components/MyNav";
 import LoginPersist from "./Components/LoginPersist";
 import YouBetterRun from "./Components/YouBetterRun";

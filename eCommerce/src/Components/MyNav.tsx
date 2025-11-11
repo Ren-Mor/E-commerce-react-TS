@@ -1,24 +1,27 @@
+import { Navbar, Nav, Container, Form, Row, Col, Badge } from "react-bootstrap";
+import { Link, NavLink, useNavigate } from "react-router-dom";
+import type { FormEvent, ChangeEvent } from "react";
 import { useState } from "react";
-import { Badge, Col, Container, Form, FormControl, Nav, Navbar, NavbarCollapse, Row } from "react-bootstrap";
 import { useSelector } from "react-redux";
-import { Link, NavLink } from "react-router-dom";
+import type { RootState } from "../Components/../Redux/store";
+import "../App.css";
 
 function MyNav() {
-  const CartContent = useSelector((state: unknown) => state.cart.content);
-  const tokenStatus = useSelector((state: string | null) => state.login.token);
-  const user = useSelector((state: unknown) => state.login.user);
+  const CartContent = useSelector((state: RootState) => state.cart.content);
+  const tokenStatus = useSelector((state: RootState) => state.login.token);
+  const user = useSelector((state: RootState) => state.login.user);
 
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState<string>("");
   const navigate = useNavigate();
 
-  const handleSearchSubmit = (e) => {
+  const handleSearchSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (search.trim()) {
       navigate("/prodotti/all", { state: { search } });
     }
   };
   const linkToProfile = () => {
-    if (user.ruolo === "ADMIN") {
+    if (user?.ruolo === "ADMIN") {
       navigate("/adminprofile");
     } else {
       navigate("/userprofile");
@@ -33,87 +36,72 @@ function MyNav() {
     >
       <Container fluid>
         <Navbar.Brand as={Link} to="/" className="me-5 fs-3 fw-bold">
-          TECHNOMANCER
+          HW STORE
         </Navbar.Brand>
-        <Navbar.Toggle aria-controls="basic navbar-nav" />
-        <NavbarCollapse className="basic-navbar-nav">
+        <Navbar.Toggle aria-controls="basic-navbar-nav" />
+        <Navbar.Collapse id="basic-navbar-nav ">
           <Nav className="gap-2 mx-2">
-            <NavLink
-              to="prodotti/cpu"
-              className={({ isActive }: { isActive: boolean }) => (isActive ? "nav-link active" : "nav-link")}
-            >
+            <NavLink to="/prodotti/cpu" className={({ isActive }) => (isActive ? "nav-link active" : "nav-link")}>
               Processori
             </NavLink>
-            <NavLink
-              to="prodotti/gpu"
-              className={({ isActive }: { isActive: boolean }) => (isActive ? "nav-link active" : "nav-link")}
-            >
-              Schede Grafiche
+            <NavLink to="/prodotti/gpu" className={({ isActive }) => (isActive ? "nav-link active" : "nav-link")}>
+              Schede grafiche
             </NavLink>
-            <NavLink
-              to="prodotti/psu"
-              className={({ isActive }: { isActive: boolean }) => (isActive ? "nav-link active" : "nav-link")}
-            >
+            <NavLink to="/prodotti/psu" className={({ isActive }) => (isActive ? "nav-link active" : "nav-link")}>
               Alimentatori
             </NavLink>
-            <NavLink
-              to="prodotti/ram"
-              className={({ isActive }: { isActive: boolean }) => (isActive ? "nav-link active" : "nav-link")}
-            >
-              Schede RAM
+            <NavLink to="/prodotti/ram" className={({ isActive }) => (isActive ? "nav-link active" : "nav-link")}>
+              Memorie
             </NavLink>
-            <NavLink
-              to="prodotti/mb"
-              className={({ isActive }: { isActive: boolean }) => (isActive ? "nav-link active" : "nav-link")}
-            >
-              Schede Madri
+            <NavLink to="/prodotti/mb" className={({ isActive }) => (isActive ? "nav-link active" : "nav-link")}>
+              Schede madri
             </NavLink>
-            <NavLink
-              to="prodotti/case"
-              className={({ isActive }: { isActive: boolean }) => (isActive ? "nav-link active" : "nav-link")}
-            >
+            <NavLink to="/prodotti/case" className={({ isActive }) => (isActive ? "nav-link active" : "nav-link")}>
               Case
             </NavLink>
           </Nav>
+
           <Form
-            className="d-flex ms-auto me-3 mb-3 mb-lg-0 mt-3 mt-lg-0 justify-content-center" /*onSubmit={funzione barra di ricerca}*/
+            className="d-flex ms-auto me-3 mb-3 mb-lg-0 mt-3 mt-lg-0 justify-content-center"
+            onSubmit={handleSearchSubmit}
           >
-            <FormControl
+            <Form.Control
               type="search"
               placeholder="Cerca..."
               className="rounded-pill mw-300"
-              aria-label="Search" /*value={search} onChange{(e)=> setSearch(e.target.value)}*/
+              aria-label="Search"
+              value={search}
+              onChange={(e: ChangeEvent<HTMLInputElement>) => setSearch(e.target.value)}
             />
           </Form>
+
           <Row>
             <Col className="d-flex justify-content-center align-items-center">
               <Nav className="d-flex flex-row gap-4 align-items-center">
-                <NavLink to={"/cart"} className="position-relative">
+                <NavLink to="/cart" className="position-relative">
                   <i className="bi bi-cart-fill fs-4"></i>
-                  <Badge bg="danger" pill className="position-absolute top-10 start-90 translate middle">
-                    {/*CartContent.length*/}
+                  <Badge bg="danger" pill className="position-absolute top-10 start-90 translate-middle ">
+                    {CartContent.length}
                   </Badge>
                 </NavLink>
-                <NavLink to="signin" className="text-decoration-none">
-                  {/*Su questo NavLink bisogna aggiungere la logica nel caso in cui il token di autenticazione non sia presente*/}
-                  <i className="bi bi-person-circle fs-4"></i>
-                  <span className="text-white access ms-2">Accedi</span>
-                </NavLink>
-                <Nav className="d-flex align-items-center text-decoration-none">
-                  <i
-                    /* disabled={!user}
-                      onClick={linkToProfile}*/
-                    className="bi bi-person-circle fs-4"
-                  ></i>
+                {tokenStatus === null ? (
+                  <NavLink to="/signin" className="text-decoration-none">
+                    <i className="bi bi-person-circle fs-4"></i>
+                    <span className="text-white access ms-2">Accedi</span>
+                  </NavLink>
+                ) : (
+                  <Nav className="d-flex align-items-center text-decoration-none">
+                    <i aria-disabled={!user} onClick={linkToProfile} className="bi bi-person-circle fs-4"></i>
 
-                  <Link className="text-decoration-none" to="/confirm-logout">
-                    <span className="text-white access ms-2">Log out</span>
-                  </Link>
-                </Nav>
+                    <Link className="text-decoration-none" to="/confirm-logout">
+                      <span className="text-white access ms-2">Log out</span>
+                    </Link>
+                  </Nav>
+                )}
               </Nav>
             </Col>
           </Row>
-        </NavbarCollapse>
+        </Navbar.Collapse>
       </Container>
     </Navbar>
   );
